@@ -1,0 +1,17 @@
+{
+    "name": "vivi/pdo",
+    "description": "min framework",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Vivi\\PDO\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "vg"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}

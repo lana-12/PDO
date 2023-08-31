@@ -1,0 +1,2 @@
+Error : [SQLSTATE[HY000] [1045] Access denied for user 'roo'@'localhost' (using password: NO)] : C:\xampp\htdocs\mes-sites\diginamic\tp-PDO\src\Kernel\DataBase.php ligne 23
+
