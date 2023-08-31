@@ -3,6 +3,7 @@
 namespace Vivi\PDO\Entity;
 
 use Vivi\PDO\Kernel\DataBase;
+use Vivi\PDO\Utils\MyFunction;
 
 
 class Model  {
@@ -94,32 +95,68 @@ private static function Execute($sql, array $attributes =null)
     }
 
 
-
+// My function qui marche
     public static function delete(int $id)
     {
-        $sql = "delete from " . self::getEntityName() . " where id=$id";
-        return DataBase::getInstance()->exec($sql);
+        $sql = "delete from " . self::getEntityName() . " where id= ?";
+        var_dump($sql);
+        die();
+        return self::Execute($sql, [$id]);
     }
+
+    //Fonction Hervé
+    // public static function delete(int $id)
+    // {
+    //     $sql = "delete from " . self::getEntityName() . " where id=$id";
+    //     return DataBase::getInstance()->exec($sql);
+    // }
 
 
 
     public static function update(int $id, array $datas)
     {
+        MyFunction::dump($datas);
+        // die;
+
         $sql = "update " . self::getEntityName() . " set ";
         $count = count($datas);
         $i = 1;
         foreach ($datas as $key => $value) {
             if ($i < $count) {
-                $sql .= "$key='$value',";
+                $sql .= "$key=':$value',";
             } else {
-                $sql .= "$key='$value'";
+                $sql .= "$key='$value',";
             }
             $i++;
         }
         $sql .= " where id=$id";
-        var_dump($sql);
+      var_dump($sql);
+      die;
         return DataBase::getInstance()->exec($sql);
     }
+    // public static function update(int $id, array $datas)
+    // {
+    //     $sql = "update " . self::getEntityName() . " set ";
+    //     $count = count($datas);
+    //     $i = 1;
+    //     foreach ($datas as $key => $value) {
+    //         if ($i < $count) {
+    //             $sql .= "$key=':$value'";
+    //         } else {
+    //             $sql .= "$key='$value',";
+    //         }
+    //         $i++;
+    //     }
+    //     $sql .= " where id=$id";
+      
+    //     return DataBase::getInstance()->exec($sql);
+    // }
+
+
+        
+
+
+
 
 
 }

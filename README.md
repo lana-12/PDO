@@ -3,7 +3,7 @@
 
 ## Cloner le projet
 ```
-git clone 
+git clone https://github.com/lana-12/PDO.git
 ```
 
 ## Dépendance
