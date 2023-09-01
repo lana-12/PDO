@@ -24,11 +24,6 @@ class Model  {
         return static::class;
     }
 
-    // private static function Execute($sql)
-    // {
-    //     $pdostatement = DataBase::getInstance()->query($sql);
-    //     return $pdostatement->fetchAll(\PDO::FETCH_CLASS, self::getClassName());
-    // }
 
 private static function Execute($sql, array $attributes =null)
     {
@@ -47,12 +42,23 @@ private static function Execute($sql, array $attributes =null)
     }
 
 
-    public static function getAll()
+    public static function getAll(int $limit = null, int $offset = 0)
     {
-        $sql = "select * from " . self::getEntityName();
-        return self::Execute($sql)->fetchAll(\PDO::FETCH_CLASS, self::getClassName());
-    }
+        $db = DataBase::getInstance();
+        //si $limit est différent de null => fait 
+        if(!is_null($limit)) {
+            $sql = "select * from " . self::getEntityName() . " ORDER BY title LIMIT $limit OFFSET $offset";
+            return self::Execute($sql)->fetchAll(\PDO::FETCH_CLASS, self::getClassName());
 
+        }
+
+        //Sinon
+        //return all books par ordre alphabétique
+        $sql = "select * from " . self::getEntityName() ." ORDER BY title";
+        return self::Execute($sql)->fetchAll(\PDO::FETCH_CLASS, self::getClassName());
+
+
+    }
 
 
     public static function getById(int $id)
@@ -62,38 +68,6 @@ private static function Execute($sql, array $attributes =null)
         //Comme fetchAll [0] on récupère le premier élément sinon c'est $result
         return $result[0];
     }
-
-
-
-    public static function findNotesByUser()
-    {
-        $sql = "SELECT notes.id, notes.note, users.id as users
-            FROM notes
-            LEFT JOIN users
-            on user_id= users.id
-            
-        ";
-        // var_dump($sql);
-        return self::Execute($sql);
-    }
-
-
-    // public static function insert(array $datas)
-    // {
-    //     $sql = "insert into " . self::getEntityName() . " values (NULL,";
-    //     $count = count($datas);
-    //     $i = 1;
-    //     foreach ($datas as $data) {
-    //         if ($i < $count) {
-    //             $sql .= "'$data',";
-    //         } else {
-    //             $sql .= "'$data'";
-    //         }
-    //         $i++;
-    //     }
-    //     $sql .= ")";
-    //     return DataBase::getInstance()->exec($sql);
-    // }
 
     public static function create($data)
     {
@@ -132,6 +106,6 @@ private static function Execute($sql, array $attributes =null)
         return $stmt->execute();
     }
 
-
+    
         
 }
