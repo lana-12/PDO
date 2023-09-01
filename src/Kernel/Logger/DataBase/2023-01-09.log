@@ -1,0 +1,2 @@
+Error : [SQLSTATE[HY000] [2002] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée] : C:\xampp\htdocs\mes-sites\diginamic\tp-PDO\src\Kernel\DataBase.php ligne 23
+

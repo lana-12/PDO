@@ -14,8 +14,7 @@ class Home extends AbstractController{
     public function index()
     {
         $view = new Views();
-        $books = Books::getAll();
-        $id = Books::getById(3);
+        
         $view->setHead('head.html');
         $view->setHeader('header.html');
         $view->setHtml('index.php');
@@ -25,8 +24,6 @@ class Home extends AbstractController{
         $view->render([
             'flash' => $this->getFlashMessage(),
             'titlePage' => 'Page HomeController',
-            'books' => $books,
-            'id'=> $id,
         ]);
     }
 

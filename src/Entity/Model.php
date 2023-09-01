@@ -2,6 +2,7 @@
 
 namespace Vivi\PDO\Entity;
 
+use PDO;
 use Vivi\PDO\Kernel\DataBase;
 use Vivi\PDO\Utils\MyFunction;
 
@@ -77,86 +78,60 @@ private static function Execute($sql, array $attributes =null)
     }
 
 
-    public static function insert(array $datas)
-    {
-        $sql = "insert into " . self::getEntityName() . " values (NULL,";
-        $count = count($datas);
-        $i = 1;
-        foreach ($datas as $data) {
-            if ($i < $count) {
-                $sql .= "'$data',";
-            } else {
-                $sql .= "'$data'";
-            }
-            $i++;
-        }
-        $sql .= ")";
-        return DataBase::getInstance()->exec($sql);
-    }
-
-
-// My function qui marche
-    public static function delete(int $id)
-    {
-        $sql = "delete from " . self::getEntityName() . " where id= ?";
-        var_dump($sql);
-        die();
-        return self::Execute($sql, [$id]);
-    }
-
-    //Fonction Hervé
-    // public static function delete(int $id)
+    // public static function insert(array $datas)
     // {
-    //     $sql = "delete from " . self::getEntityName() . " where id=$id";
-    //     return DataBase::getInstance()->exec($sql);
-    // }
-
-
-
-    public static function update(int $id, array $datas)
-    {
-        MyFunction::dump($datas);
-        // die;
-
-        $sql = "update " . self::getEntityName() . " set ";
-        $count = count($datas);
-        $i = 1;
-        foreach ($datas as $key => $value) {
-            if ($i < $count) {
-                $sql .= "$key=':$value',";
-            } else {
-                $sql .= "$key='$value',";
-            }
-            $i++;
-        }
-        $sql .= " where id=$id";
-      var_dump($sql);
-      die;
-        return DataBase::getInstance()->exec($sql);
-    }
-    // public static function update(int $id, array $datas)
-    // {
-    //     $sql = "update " . self::getEntityName() . " set ";
+    //     $sql = "insert into " . self::getEntityName() . " values (NULL,";
     //     $count = count($datas);
     //     $i = 1;
-    //     foreach ($datas as $key => $value) {
+    //     foreach ($datas as $data) {
     //         if ($i < $count) {
-    //             $sql .= "$key=':$value'";
+    //             $sql .= "'$data',";
     //         } else {
-    //             $sql .= "$key='$value',";
+    //             $sql .= "'$data'";
     //         }
     //         $i++;
     //     }
-    //     $sql .= " where id=$id";
-      
+    //     $sql .= ")";
     //     return DataBase::getInstance()->exec($sql);
     // }
 
+    public static function create($data)
+    {
+        $db = Database::getInstance();
+        $sql = "INSERT INTO " . self::getEntityName() . "(title, author, type, description) VALUES (:title, :author, :type, :description)";
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam(':title', $data['title'], PDO::PARAM_STR);
+        $stmt->bindParam(':author', $data['author'], PDO::PARAM_STR);
+        $stmt->bindParam(':type', $data['type'], PDO::PARAM_STR);
+        $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+
+    public static function delete(int $id)
+    {
+        $sql = "delete from " . self::getEntityName() . " where id= ?";
+        return self::Execute($sql, [$id]);
+    }
+
+    public static function update(int $id, array $data)
+    {
+
+        $db = Database::getInstance();
+        $sql = "UPDATE " . self::getEntityName() . " SET title= :title, author= :author, type= :type, description = :description WHERE id= :id";
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindValue(':title', $data['title'],PDO::PARAM_STR);
+        $stmt->bindValue(':author', $data['author'],PDO::PARAM_STR);
+        $stmt->bindValue(':type', $data['type'],PDO::PARAM_STR);
+        $stmt->bindValue(':description', $data['description'],PDO::PARAM_STR);
+        $stmt->bindValue(':id', $id ,PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
 
         
-
-
-
-
-
 }

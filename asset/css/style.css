@@ -1,3 +1,9 @@
 body {
     background-color: #bebec6;
 }
+
+
+.showBook {
+    border: solid #fff 2px;
+    padding: 10px;
+}
