@@ -1,9 +1,13 @@
 body {
     background-color: #bebec6;
+    height: 100vh;
 }
-
 
 .showBook {
+    width: 80%;
+    height: auto;
+    margin: auto;
     border: solid #fff 2px;
-    padding: 10px;
+    padding: 40px;
 }
+

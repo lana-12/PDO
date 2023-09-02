@@ -5,11 +5,8 @@ namespace Vivi\PDO\Kernel;
 use PDO;
 use PDOException;
 
-use Vivi\PDO\Entity\Model;
 use Vivi\PDO\Interface\Log;
 use Vivi\PDO\Configuration\Config;
-
-
 
 class DataBase extends PDO implements Log{
 

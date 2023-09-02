@@ -11,79 +11,48 @@ class Book extends AbstractController{
 
     public function index()
     {
-        $view = new Views();
-        // $books = Books::allPagination();
+        
         $books = Books::getAll();
 
-        //déterminer le nombre en base de données
+        //Gestion Error
+        if (!$books) {
+            http_response_code(404);
+            header('Location: /?controller=book');
+        }      
+        //Total in the DataBase
         $nbrBook = count($books);
 
-        //1. etape
-        //Et tjs pour Vérifier(désolée mais il faut vérifier)
-        // pour vérifier il affiche le nbre de books en base de données
-        // var_dump($nbrBook); //Moi ok
+        //Nbr element display
+        $perPage = 6;
 
-        //On a besoin du nombre d'élément per pages
-        // Donc ici c'est pour 5 élément per page
-
-        //2.Etape 
-        $perPage = 5;
-
-        //On va récupérer la page
-        //var_dump($_GET['page']); // => tu vas l'url du navigateur comme exemple = 
-        // ex: http://localhost:3000/index.php?controller=Book&page=6 et tu verra le chiffre   6   
-        // Attention c'est une string si tu fais un var_dump(gettype($_GET['page'])) = il y a "string" mais on veut un int
-        // Donc on le converti en int puisque qu'il faut un int en argument de la function getAll()
-
-        //$currentPage = intval($_GET['page']);
-        //On vérifie
-        //var_dump(gettype($currentPage)); //=>int
-        //var_dump($currentPage); //C'est un int
-
-        //3. Etape
-        // Vérifie Si pas vide ou egal à false
-        //Mais tjs protégé les saisies
-        // Si pas définit on le remet sur la première page
-        // Donc ici on n'a la page courante
-        // si tu as une autre solution je prend
         if(isset($_GET['page'])){
             $currentPage = (int) $_GET['page'] ;
         } else {
             $currentPage = 1;
         }
 
-        // Il faut savoir le nombre de page grace au isset
-        // Calculer le nbre de page
-        // Donc le nombre de entrée en BDD / nbr perPerge
+        // Calcul du nbre de page
         $nbrPerPage = (int) ceil($nbrBook / $perPage);
         //On vérifie
         // var_dump($nbrPerPage);
 
-        //Tjs vérifié si la page courrent est sup au nombre total de page on lui dit que c'est la prmeière page qu'il faut afficher
-        // if($currentPage > $nbrPerPage){
-        //     $currentPage = 1;
-        // }
-        //Sinon si la page courante > nbre de page =1 sinon à la page courante
+        //Vérif si page current > au nombre total de page + first page à afficher = 1
         $currentPage = ($currentPage>$nbrPerPage) ? 1 : $currentPage;
-        // var_dump($currentPage);
 
-
-        //Afficher les livres en function des nombres de page définit dans         $perPage = 5; Etape 2
-
+        //Display books en function des nombres de page définit dans  $perPage = 5
         $offset = ($currentPage - 1) * $perPage;
-
-
         $books = Books::getAll($perPage, $offset );
-        // var_dump($perPage);
 
+        $view = new Views();
         $view->setHead('head.html');
         $view->setHeader('header.html');
-        $view->setHtml('book.php');
+        $view->setHtml('book/book.php');
         $view->setFooter('footer.html');
 
         $view->render([
             'flash' => $this->getFlashMessage(),
-            'titlePage' => 'Page BookController',
+            'title'=> 'Book',
+            'titlePage' => 'Liste des Livres',
             'books'=> $books,
             'currentPage'=> $currentPage,
             'nbrBook' => $nbrBook,
@@ -93,20 +62,31 @@ class Book extends AbstractController{
 
     public function showBook()
     {
-        $view = new Views();
         $id = $_GET['id'];
         $book = Books::getById($id);
+
+        //Gestion Error
+        if (!$book) {
+            http_response_code(404);
+            header('Location: /?controller=book');
+        }
+
+        $view = new Views();
         $view->setHead('head.html');
         $view->setHeader('header.html');
-        $view->setHtml('show.php');
+        $view->setHtml('book/show.php');
         $view->setFooter('footer.html');
 
         $view->render([
             'flash' => $this->getFlashMessage(),
-            'titlePage' => 'Page ShowBookController',
+            'title' => 'Show Book',
+            'titlePage' => 'Détail du livre',
             'book' => $book,
         ]);
     }
+
+
+
     public function create()
     {
         if (isset($_POST['submit'])) {
@@ -122,7 +102,6 @@ class Book extends AbstractController{
                                 'type' => $_POST['type'],
                                 'description' => $_POST['description'],
                             ]);
-
                             if ($result) {
                                 $this->setFlashMessage("Le livre a été bien créé", "success");
                             }
@@ -135,12 +114,13 @@ class Book extends AbstractController{
         $view = new Views();
         $view->setHead('head.html');
         $view->setHeader('header.html');
-        $view->setHtml('createBook.php');
+        $view->setHtml('book/createBook.php');
         $view->setFooter('footer.html');
 
         $view->render([
             'flash' => $this->getFlashMessage(),
-            'titlePage' => 'Page BookController',
+            'title' => 'Create Book',
+
         ]);
     }
 
@@ -155,7 +135,7 @@ class Book extends AbstractController{
         if ($result) {
             $this->setFlashMessage("Le livre a bien été supprimé", "success");
         }
-        $this->index();
+        header('Location: /?controller=book');
         
     }
 
@@ -163,12 +143,9 @@ class Book extends AbstractController{
     {
         $id = $_GET['id'];
         $book = Books::getById($id);
-        // Vérifie si un livre avec $id existe sinon je le redirige vers controller=book + method=index
+
         if (!$book) {
-
             http_response_code(404);
-
-            //Redirection vers controller de mon choix, ici c'est Controller/Book.php
             header('Location: /?controller=book');
         }
 
@@ -180,10 +157,10 @@ class Book extends AbstractController{
                 
                             $result = false;
                             $this->setFlashMessage('Aucun enregistrement ne correspond', 'error');
-                            if (isset($_GET['id'])) {
-                                // $id = $_GET['id'];
+                            if (isset($id)) {
+                                // $id = $id;
                                 $result = Books::update(
-                                    $_GET['id'],
+                                    $id,
                                     [
                                         'title' => $_POST['title'],
                                         'author' => $_POST['author'],
@@ -194,8 +171,8 @@ class Book extends AbstractController{
                             }
                             if ($result) {
                                 $this->setFlashMessage("Votre Livre a été bien modifié", "success");
+                                header('Location: /?controller=book&method=showBook&id='. $id);
                                 // $this->index();
-                                header('Location: /?controller=book');
                             }
                         }
                     }
@@ -203,16 +180,15 @@ class Book extends AbstractController{
             }
         }
 
-        $id = $_GET['id'];
-        $book = Books::getById($id);
         $view = new Views();
         $view->setHead('head.html');
         $view->setHeader('header.html');
-        $view->setHtml('updateBook.php');
+        $view->setHtml('book/updateBook.php');
         $view->setFooter('footer.html');
 
         $view->render([
             'flash' => $this->getFlashMessage(),
+            'title' => 'Edit Book',
             'titlePage' => 'Page BookController',
             'book' => $book,
         ]);

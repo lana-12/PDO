@@ -1,4 +1,4 @@
-# Mini framework
+# Tp PDO-POO
 
 
 ## Cloner le projet

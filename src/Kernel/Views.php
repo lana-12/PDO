@@ -3,7 +3,6 @@
 namespace Vivi\PDO\Kernel;
 
 use Vivi\PDO\Configuration\Config;
-use Vivi\PDO\Kernel\Model;
 
 class Views
 {

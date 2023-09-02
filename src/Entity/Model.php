@@ -4,7 +4,6 @@ namespace Vivi\PDO\Entity;
 
 use PDO;
 use Vivi\PDO\Kernel\DataBase;
-use Vivi\PDO\Utils\MyFunction;
 
 
 class Model  {
@@ -32,10 +31,7 @@ private static function Execute($sql, array $attributes =null)
         if($attributes !==null){
             $query = $db->prepare($sql);
             $query->execute($attributes);
-            // $query->fetchAll(\PDO::FETCH_CLASS, self::getClassName());
             return $query;
-
-
         } else {
             return $db->query($sql);
         }
@@ -44,29 +40,26 @@ private static function Execute($sql, array $attributes =null)
 
     public static function getAll(int $limit = null, int $offset = 0)
     {
-        $db = DataBase::getInstance();
-        //si $limit est différent de null => fait 
+        // $db = DataBase::getInstance();
+        //return par order By Asc
         if(!is_null($limit)) {
             $sql = "select * from " . self::getEntityName() . " ORDER BY title LIMIT $limit OFFSET $offset";
             return self::Execute($sql)->fetchAll(\PDO::FETCH_CLASS, self::getClassName());
 
         }
-
-        //Sinon
         //return all books par ordre alphabétique
         $sql = "select * from " . self::getEntityName() ." ORDER BY title";
         return self::Execute($sql)->fetchAll(\PDO::FETCH_CLASS, self::getClassName());
-
-
     }
 
 
     public static function getById(int $id)
     {
-        $sql = "select * from " . self::getEntityName() . " where id=$id";
-        $result =  self::Execute($sql)->fetchAll(\PDO::FETCH_CLASS, self::getClassName());
-        //Comme fetchAll [0] on récupère le premier élément sinon c'est $result
-        return $result[0];
+            $sql = "select * from " . self::getEntityName() . " where id=$id";
+            $result =  self::Execute($sql)->fetchAll(\PDO::FETCH_CLASS, self::getClassName());
+            //Comme fetchAll [0] on récupère le premier élément sinon c'est $result
+            return $result[0];
+
     }
 
     public static function create($data)

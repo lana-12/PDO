@@ -21,18 +21,13 @@ class Dispatcher {
                 $this->method = $_GET['method'];
             } else {
                 $this->controller = Config::CONTROLLER . 'Home';
-                // $this->method = 'index';
             }
         }
     }
 
     public function Dispatch() {
-        // echo 'je suis ds le controller ' .$this->controller;
-        // die;
         $method = $this->method;
         $cont = new $this->controller;
-        // $cont->index();
         $cont->$method();
-
     }
 }
