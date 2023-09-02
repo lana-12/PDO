@@ -9,7 +9,7 @@
 
     <div class="row">
         <div class="col ">
-            <a href="index.php?controller=book" class="btn btn-primary mb-5">Retour à la liste de Livre</a>
+            <a href="index.php?controller=book" class="btn btn-primary mb-5">Retour à la liste des Livres</a>
 
         </div>
     </div>
