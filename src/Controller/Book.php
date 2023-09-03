@@ -23,7 +23,7 @@ class Book extends AbstractController{
         $nbrBook = count($books);
 
         //Nbr element display
-        $perPage = 6;
+        $perPage = 10;
 
         if(isset($_GET['page'])){
             $currentPage = (int) $_GET['page'] ;
@@ -56,6 +56,7 @@ class Book extends AbstractController{
             'books'=> $books,
             'currentPage'=> $currentPage,
             'nbrBook' => $nbrBook,
+            'totalPages'=> $nbrPerPage
             
         ]);
     }

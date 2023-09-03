@@ -3,9 +3,7 @@ body {
     height: 100vh;
 }
 
-.showBook {
-    width: 80%;
-    height: auto;
+.showBook {   
     margin: auto;
     border: solid #fff 2px;
     padding: 40px;
